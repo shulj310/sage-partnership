@@ -918,6 +918,167 @@
   .footer-bottom a { color: var(--bg-yellow); text-decoration: none; }
   .footer-bottom a:hover { text-decoration: underline; }
 
+  /* --- Password gate --- */
+  body.locked { overflow: hidden; height: 100vh; }
+  body.locked .hero-sub,
+  body.locked .hero-buttons,
+  body.locked .section,
+  body.locked .section-tint,
+  body.locked .section-light,
+  body.locked .footer,
+  body.locked .section-divider {
+    filter: blur(14px) saturate(0.4);
+    pointer-events: none;
+    user-select: none;
+    transition: filter 0.4s ease;
+  }
+  body.locked .nav,
+  body.locked .banner { pointer-events: none; }
+  body.locked .hero::before { opacity: 0.5; }
+
+  .password-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(254, 253, 248, 0.35);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    padding: 32px 20px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  body.locked .password-gate {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .password-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 20px;
+    box-shadow: var(--shadow-prominent);
+    padding: 44px 40px 36px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+  }
+  .password-card .gate-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .password-card .gate-mark .logo-daylit-text {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.7px;
+    color: var(--maroon);
+  }
+  .password-card .gate-mark .brand-x {
+    font-size: 15px;
+    color: var(--text-muted);
+    padding: 0 2px;
+  }
+  .password-card .gate-mark .logo-sage {
+    font-size: 24px;
+    font-weight: 700;
+    color: #00D639;
+    font-style: italic;
+    letter-spacing: -0.4px;
+  }
+  .password-card .gate-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(61, 12, 17, 0.06);
+    color: var(--text-primary);
+    padding: 5px 14px;
+    border-radius: 9999px;
+    border: 1px solid rgba(61, 12, 17, 0.10);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .password-card .gate-label::before { content: '•'; color: var(--maroon); font-size: 13px; }
+  .password-card h2 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    line-height: 1.20;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+  }
+  .password-card p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .password-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .password-form input[type="password"] {
+    width: 100%;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1.5px solid var(--border-light);
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-family: var(--font-ui);
+    font-size: 16px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .password-form input[type="password"]::placeholder { color: var(--text-muted); }
+  .password-form input[type="password"]:focus {
+    border-color: var(--maroon);
+    box-shadow: var(--shadow-focus);
+  }
+  .password-form input.error {
+    border-color: #dc2626;
+    box-shadow: rgba(220, 38, 38, 0.15) 0px 0px 0px 3px;
+  }
+  .password-form button {
+    width: 100%;
+    background: var(--maroon);
+    color: var(--text-on-dark);
+    padding: 14px 28px;
+    border-radius: 10px;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn);
+    transition: background 0.2s;
+  }
+  .password-form button:hover { background: var(--maroon-light); }
+  .pw-error {
+    min-height: 18px;
+    font-size: 13px;
+    color: #dc2626;
+    margin-top: 10px;
+    font-weight: 500;
+  }
+  .password-card .gate-footer {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-light);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.2px;
+  }
+
   /* --- Responsive --- */
   @media (max-width: 1024px) {
     .section { padding: 72px 32px; }
@@ -960,7 +1121,71 @@
   }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<div class="password-gate" id="password-gate">
+  <div class="password-card">
+    <div class="gate-mark">
+      <svg width="30" height="28" viewBox="0 0 28 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M2.5 13.5 C2.5 7.15 7.65 2 14 2 C20.35 2 25.5 7.15 25.5 13.5 L2.5 13.5 Z" fill="#3d0c11"/>
+        <rect x="1" y="16" width="26" height="2.6" rx="1.3" fill="#3d0c11"/>
+        <rect x="8" y="21" width="12" height="2.6" rx="1.3" fill="#3d0c11"/>
+      </svg>
+      <span class="logo-daylit-text">daylit</span>
+      <span class="brand-x">×</span>
+      <span class="logo-sage">Sage</span>
+    </div>
+    <div class="gate-label">Confidential</div>
+    <h2>Partnership proposal<br>for Sage leadership.</h2>
+    <p>This page is access-controlled. Please enter the password you were sent to continue.</p>
+    <form class="password-form" id="password-form" autocomplete="off">
+      <input type="password" id="pw-input" placeholder="Enter password" autofocus spellcheck="false" autocomplete="off" />
+      <button type="submit">Unlock <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; background:var(--maroon-light); border-radius:5px; font-size:11px; letter-spacing:1px; margin-left: 6px;">⠿</span></button>
+      <div class="pw-error" id="pw-error" aria-live="polite"></div>
+    </form>
+    <div class="gate-footer">Trouble getting in? Email <a href="mailto:jared@daylit.com" style="color: var(--maroon); text-decoration: underline;">jared@daylit.com</a></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var STORAGE_KEY = 'sage-daylit-unlocked';
+  var PASSWORD = 'Sage&Daylit';
+  var body = document.body;
+  var gate = document.getElementById('password-gate');
+  var form = document.getElementById('password-form');
+  var input = document.getElementById('pw-input');
+  var error = document.getElementById('pw-error');
+
+  function unlock() {
+    body.classList.remove('locked');
+    setTimeout(function() {
+      if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
+    }, 400);
+    try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch(e) {}
+  }
+
+  try {
+    if (sessionStorage.getItem(STORAGE_KEY) === '1') unlock();
+  } catch(e) {}
+
+  if (form) {
+    form.addEventListener('submit', function(ev) {
+      ev.preventDefault();
+      if (input.value === PASSWORD) {
+        error.textContent = '';
+        input.classList.remove('error');
+        unlock();
+      } else {
+        error.textContent = 'Incorrect password. Try again.';
+        input.classList.add('error');
+        input.value = '';
+        input.focus();
+      }
+    });
+  }
+})();
+</script>
 
 <a class="banner" href="https://www.daylit.com/blog/daylit-announcement" target="_blank" rel="noopener">
   ☀︎ <strong>Daylit raises $110M</strong> to build AI Agents for Accounts Receivable Intelligence.<span class="cta-text">Click to learn more</span><span class="arrow">→</span>
